@@ -22,11 +22,14 @@ class plotter():
         '''
         print(files)
         import os.path
+        import chardet
         from pandas import read_csv
         if not os.path.exists(files):
             print('ERROR! '+files+' not found.')
             return
-        data = read_csv(files)
+        with open(files, 'rb') as filee:
+            result = chardet.detect(filee.read())
+        data = read_csv(files, encoding=result['encoding'])
         #print(data.columns.values[1:])
         line_chart = pygal.Line()
         line_chart.title = title
@@ -37,22 +40,27 @@ class plotter():
             _ = [line_chart.add(select, data[select])]
             count = count+1
         line_chart.render_to_file(output)
+        print("Completed!!")
 
     def indir(inputdirectory="./", outdirectory="./"):
         from os import listdir
         import os.path
         directory = [f for f in listdir(inputdirectory) if os.path.isfile(os.path.join(inputdirectory, f))]
-        print(directory)
         for files in directory:
             indir = inputdirectory+files
             title = files[:-4]
             outdir = outdirectory+files[:-4]+'.html'
-            print(indir, title, outdir)
-            print(os.path.exists(indir))
             plotter.plot(indir, title, outdir)
         print("Completed!!")
 
+    def xlsxtocsv(dirin='./', dirout='./'):
+        """ Covert Excel file in dir in to CSV in dir out """
+        import pandas as pd
+        import os
+        directory = [f for f in os.listdir(dirin) if '.xlsx' in f]
+        for files in directory:
+            print('Coverting '+files+'\nto file   '+files[:-5]+'.csv'+'\ndirectory '+dirin+' -> '+dirout)
+            data_xls = pd.read_excel(dirin+files, index_col=None)
+            data_xls.to_csv(dirout+files[:-5]+'.csv', index=False)
+plotter.xlsxtocsv('./data/xlsx/', './data/')
 plotter.indir('./data/', './Graph/')
-#plotter.plot('./data/Internet_Time_Use.csv', 'Internet_Time_Use', 'Internet_Time_Use.html')
-#plotter.plot('./data/Use_Line.csv', 'Internet_Time_Use', 'Use_Line.html')
-#plotter.plot('./data/use.csv', 'Internet_Time_Use', 'use.html')
