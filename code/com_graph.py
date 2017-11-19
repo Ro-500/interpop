@@ -28,9 +28,9 @@ def com(whatyear, whatfilter, num=0):
         data_head = ['2553', '2554', '2555', '2556', '2557', '2558', '2559']
         kind = list((data[num])[whatfilter])
         print(kind)
-        for yrs in range(len(kind)):
-            chart.add(kind[yrs], info[yrs])
 
+        for i in range(len(kind)):
+            chart.add(kind[i], info[i])
     else: #single year
         chart = pg.Bar(title=head_graph+'  (100%)')
         data_head = [i for i in data[whatfilter]]
@@ -68,6 +68,7 @@ def call_data(whatyear, whatfilter, num):
                  '2553':['../data/53/Tab12.csv', \
                          '../data/53/Tab14.csv', \
                          '../data/53/Tab16.csv']}
+
     if whatyear == 'all':
         year = ['2553', '2554', '2555', '2556', '2557', '2558', '2559']
         data = [call_data(i, whatfilter, num) for i in year]
@@ -76,7 +77,7 @@ def call_data(whatyear, whatfilter, num):
     return data
 
 def select_data(data, whatyear, whatfilter=''):
-    """Work like a filter to select data for plotting"""
+    """Work like a filter to selects data for plotting"""
     whatfilter_type, kind = '', ''
     info, infos = [], []
     if whatyear == 'all':
@@ -118,42 +119,16 @@ def select_data(data, whatyear, whatfilter=''):
                 kind = '50-59 years'
             if whatfilter_type >= 60: # >60 years
                 kind = '60 years and over' #get kind of location and activity(hrs)
-        infos = [[[(data[yrs][kind][i]*100)/data[yrs]['Total'][i] for i in \
-                range(len(data[yrs][kind]))]] for yrs in range(len(data))]
-        info = [[infos[j][i] for j in range(len(infos))] for i in range(len(infos[0]))]
-        # for yrs in range(len(data)):
-        #     memo = [(data[yrs][kind][i]*100)/data[yrs]['Total'][i] for i in range(len(data[yrs][kind]))]
-        #     infos.append(memo)
-        # for i in range(len(infos[0])):
-        #     memo = [infos[j][i] for j in range(len(infos))]
-        #     info.append(memo)
+        for yrs in range(len(data)):
+            memo = [(data[yrs][kind][i]*100)/data[yrs]['Total'][i] for i in range(len(data[yrs][kind]))]
+            infos.append(memo)
+        for i in range(len(infos[0])):
+            memo = [infos[j][i] for j in range(len(infos))]
+            info.append(memo)
         print('infos:', infos)
         print()
     else: #region, activity, location
         info = [[(data[kind][i]*100)/data['Total'][i] for i in \
                 range(len(data[kind]))] for kind in list(data)[2:]]
-        # if whatfilter == 'region':
-        #     info = [[(data['Less than 1 hour'][i]*100) / data['Total'][i] for i in range(len(data['Less than 1 hour']))], \
-        #             [(data['1-2 hours'][i]*100) / data['Total'][i] for i in range(len(data['1-2 hours']))], \
-        #             [(data['2-3 hours'][i]*100) / data['Total'][i] for i in range(len(data['2-3 hours']))], \
-        #             [(data['3-4 hours'][i]*100) / data['Total'][i] for i in range(len(data['3-4 hours']))], \
-        #             [(data['4-5 hours'][i]*100) / data['Total'][i] for i in range(len(data['4-5 hours']))], \
-        #             [(data['5-6 hours'][i]*100) / data['Total'][i] for i in range(len(data['5-6 hours']))], \
-        #             [(data['More than 6 hours'][i]*100) / data['Total'][i] for i in range(len(data['More than 6 hours']))]]
-        # if whatfilter == 'location' or whatfilter == 'activity':
-        #     # for kind in sorted(data)[:-1]:
-        #     #     memo = [(data[kind][i]*100)/data['Total'][i] for i in range(len(data[kind])-1)]
-        #     #     info.append(memo)
-        #     info = [[(data['6-10 years'][i]*100)/data['Total'][i] for i in range(len(data['6-10 years']))], \
-        #             [(data['11-14 years'][i]*100)/data['Total'][i] for i in range(len(data['11-14 years']))], \
-        #             [(data['15-19 years'][i]*100)/data['Total'][i] for i in range(len(data['15-19 years']))], \
-        #             [(data['20-24 years'][i]*100)/data['Total'][i] for i in range(len(data['20-24 years']))], \
-        #             [(data['25-29 years'][i]*100)/data['Total'][i] for i in range(len(data['25-29 years']))], \
-        #             [(data['30-34 years'][i]*100)/data['Total'][i] for i in range(len(data['30-34 years']))], \
-        #             [(data['35-39 years'][i]*100)/data['Total'][i] for i in range(len(data['35-39 years']))], \
-        #             [(data['40-49 years'][i]*100)/data['Total'][i] for i in range(len(data['40-49 years']))], \
-        #             [(data['50-59 years'][i]*100)/data['Total'][i] for i in range(len(data['50-59 years']))], \
-        #             [(data['60 years and over'][i]*100)/data['Total'][i] for i in range(len(data['60 years and over']))]]
     return info
-
 com(input(), input())
