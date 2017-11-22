@@ -33,3 +33,4 @@
 * git add [ชื่อไฟล์.นามสกุล]
 * git commit -m "What do you want to say?"
 * git push -u [ชื่อรีโหมด] [branch]
+
